@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import Button from "./Components/Button";
+import Input from "./Components/Input";
+import { Container, Content, ButtonsContent } from "./styles";
+import { number_buttons, side_action_buttons, top_action_buttons } from "./all_buttons_lists";
+import { useState } from "react";
+import { evaluate } from 'mathjs'
 
-function App() {
+
+const App = () => {
+  const [currentNumber, setCurrentNumber] = useState(0);
+
+  function changeInputValue(button) {
+    if (button.value === "equal") {
+      setCurrentNumber(prev => evaluate(prev))
+    } else if (button.value === "C") {
+      setCurrentNumber("0");
+    } else {
+      setCurrentNumber(prev => `${prev === '0' ? '' : prev}${button.value}`);
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Content>
+        <Input className="input" value={currentNumber} />
+        <ButtonsContent>
+          <div className="top_actions">
+            {
+              top_action_buttons.map(b => 
+                <Button className={b.className} key={b.operation} label={b.operation} onClick={() => changeInputValue(b)} />
+              )
+            }
+          </div>
+
+          <div className="bottom">
+            <div className="numbers" >
+              {
+                number_buttons.map(b => 
+                  <Button className={b.className} key={b.number} label={b.number} onClick={() => changeInputValue(b)} />
+                )
+              }
+            </div>
+            <div className="side_actions">
+              {
+                side_action_buttons.map(b => 
+                  <Button className={b.className} key={b.operation} label={b.operation} onClick={() => changeInputValue(b)} />
+                )
+              }
+            </div>
+          </div>
+        </ButtonsContent>
+      </Content>
+    </Container>
   );
-}
+};
 
 export default App;
